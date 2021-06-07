@@ -4,21 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CalculatorActivity">
+    tools:context=".Calculator">
 
     <TextView
-        android:id="@+id/textViewOperation"
+        android:id="@+id/operationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
         android:text=""
-        app:layout_constraintBottom_toTopOf="@id/editTextInput"
+        app:layout_constraintBottom_toTopOf="@id/inputEditText"
         app:layout_constraintRight_toRightOf="parent"
         android:fontFamily="@font/comfortaa_light"
         />
 
     <EditText
-        android:id="@+id/editTextInput"
+        android:id="@+id/inputEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"

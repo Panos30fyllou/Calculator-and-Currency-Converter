@@ -6,9 +6,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -33,110 +31,92 @@ import java.util.Arrays;
 
 public class Converter extends AppCompatActivity {
 
-    final String apiKey = "9b95bbd1942db69b88e3";
-    EditText convertFromEditText, convertToEditText;
-    TextView resultTextView;
-    String convertFromValue, convertToValue = "";
-    EditText amountEditText;
-    ArrayList<String> arrayList;
-    Button convertButton;
-    String result;
-    String[] country = {"AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BOV", "BRL", "BSD", "BTN", "BWP", "BYR", "BZD", "CAD", "CDF", "CHE", "CHF", "CHW", "CLF", "CLP", "CNY", "COP", "COU", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LTL", "LVL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRO", "MUR", "MVR", "MWK", "MXN", "MXV", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP", "STD", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "USN", "USS", "UYI", "UYU", "UZS", "VEF", "VND", "VUV", "WST", "XAF", "XAG", "XAU", "XBA", "XBB", "XBC", "XBD", "XCD", "XDR", "XFU", "XOF", "XPD", "XPF", "XPT", "XTS", "XXX", "YER", "ZAR", "ZMW"};
+    final String apiKey = "9b95bbd1942db69b88e3";       //API Key that is used to access the API and get the exchange rates
+    //Array of various countries' currencies' codes
+    private final ArrayList<String> countryCodes = new ArrayList<>(Arrays.asList("AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BOV", "BRL", "BSD", "BTN", "BWP", "BYR", "BZD", "CAD", "CDF", "CHE", "CHF", "CHW", "CLF", "CLP", "CNY", "COP", "COU", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LTL", "LVL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRO", "MUR", "MVR", "MWK", "MXN", "MXV", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP", "STD", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "USN", "USS", "UYI", "UYU", "UZS", "VEF", "VND", "VUV", "WST", "XAF", "XAG", "XAU", "XBA", "XBB", "XBC", "XBD", "XCD", "XDR", "XFU", "XOF", "XPD", "XPF", "XPT", "XTS", "XXX", "YER", "ZAR", "ZMW"));
 
-    ProgressBar progressBar;
+    private TextView convertFromTextView, convertToTextView, resultTextView, fromResTextView, toResTextView, amountResTextView, equalsTextView;    //The 2 first TextViews are the ones from where the user's selection is taken and sent to the API to calculate the amount to be printed in the third one.
+    private String convertFromValue, convertToValue;                            //These Strings contain what the 2 above TextViews contain
+    private EditText amountEditText;                                            //In this EditText, the default value is taken from the calculator in the previous activity. It can be changed by the user. The value will be converted to the currency chosen.
+    private String result;                                                      //After the API's response, the result is calculated and stored in this string
+    private ProgressBar progressBar;                                            //Progress bar that is visible while the user waits fot the API's response
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_converter);
 
-        String amountFromCalc = getIntent().getStringExtra("amount");
-
-        convertFromEditText = findViewById(R.id.fromDropDown);
-        convertToEditText = findViewById(R.id.toDropDown);
-        convertFromValue = convertFromEditText.getText().toString();
-        convertToValue = convertToEditText.getText().toString();
-        convertButton = findViewById(R.id.convertButton);
+        String amountFromCalc = getIntent().getStringExtra("amount");       //The amount from the calculator is being retrieved and stored
         amountEditText = findViewById(R.id.amountEditText);
-        amountEditText.setText(amountFromCalc);
+        amountEditText.setText(amountFromCalc);                                   //Then it is set as the default value in the amount EditText
+
+        convertFromTextView = findViewById(R.id.fromDropDown);
+        convertToTextView = findViewById(R.id.toDropDown);
+        convertFromValue = convertFromTextView.getText().toString();                //convertFromValue and convertToValue get their values from their TextViews. The TextViews default values are EUR and USD
+        convertToValue = convertToTextView.getText().toString();
         resultTextView = findViewById(R.id.resultTextView);
-
+        fromResTextView = findViewById(R.id.fromResTextView);
+        equalsTextView = findViewById(R.id.equalsTextView);
+        toResTextView = findViewById(R.id.toResTextView);
+        amountResTextView = findViewById(R.id.amountResTextView);
         progressBar = findViewById(R.id.progressBar);
-        progressBar = findViewById(R.id.progressBar);
-
-        arrayList = new ArrayList<>();
-        arrayList.addAll(Arrays.asList(country));
-
 
     }
 
-    public void countryClick(View view){
+    //Is called when the convertFrom or convertTo TextView is clicked, to show the dropdown and allow the user to pick a different currency code
+    public void showDropdown(View view){
+        //A dialog window is shown
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dropdown);
-        dialog.getWindow().setLayout(500, 700);
+        dialog.getWindow().setLayout(800, 1000);
         dialog.show();
 
-        EditText editTextClicked = (EditText) view;
+        ListView currencyListView = dialog.findViewById(R.id.currencyListView); //This ListView will contain all the currency codes from the ArrayList countryCodes
+        EditText searchEditText = dialog.findViewById(R.id.searchEditText);     //The user will type here to search a currency code and narrow the results
 
-        EditText searchEditText = dialog.findViewById(R.id.searchEditText);
-        ListView currencyListView = dialog.findViewById(R.id.currencyListView);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
-
-
+        //The adapter passes the ArrayList to the ListView with a specified layout
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, countryCodes);
         currencyListView.setAdapter(adapter);
-
         searchEditText.addTextChangedListener(new SearchTextWatcher(adapter));
 
-        currencyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (editTextClicked.getId() == convertFromEditText.getId()) {
-                    convertFromEditText.setText(adapter.getItem(position));
-                    convertFromValue = convertFromEditText.getText().toString();
-                }
-                else if (editTextClicked.getId() == convertToEditText.getId()) {
-                    convertToEditText.setText(adapter.getItem(position));
-                    convertToValue = convertToEditText.getText().toString();
-                }
-                dialog.dismiss();
+        //textViewClicked will be either convertFromTextView or convertToTextView
+        TextView textViewClicked = (TextView) view;
+        currencyListView.setOnItemClickListener((parent, view1, position, id) -> {  //When an item from the list of currency codes is clicked
+            if (textViewClicked.getId() == convertFromTextView.getId()) {           //If convertFromTextView opened the dialog, the user's code selection is set to the convertFromTextView
+                convertFromTextView.setText(adapter.getItem(position));
+                convertFromValue = convertFromTextView.getText().toString();
             }
+            else if (textViewClicked.getId() == convertToTextView.getId()) {        //If convertToTextView opened the dialog, the user's code selection is set to the convertToTextView
+                convertToTextView.setText(adapter.getItem(position));
+                convertToValue = convertToTextView.getText().toString();
+            }
+            dialog.dismiss();                                                       //Dialog closes
         });
-
     }
 
-    public void convert(String from, String to, Double amount){
+    public void requestRatioFromAPI(String from, String to, Double amount){
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://free.currconv.com/api/v7/convert?q="
                 + from
                 + "_"
                 + to +
-                "&compact=ultra&apiKey=" + apiKey;
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                JSONObject jsonObject = null;
-                //Toast.makeText(getApplicationContext(), "Hi", Toast.LENGTH_SHORT).show();
-                try {
-                    jsonObject = new JSONObject(response);
-                    //Toast.makeText(getApplicationContext(), "Got response, " + jsonObject.toString(), Toast.LENGTH_LONG).show();
-                    //Toast.makeText(getApplicationContext(), "Result is ok", Toast.LENGTH_SHORT).show();
-                    Double resultValue = Double.parseDouble(jsonObject.get(from + "_" + to).toString());
-                    progressBar.setVisibility(View.INVISIBLE);
-                    result = amount + " " + from + "\n = \n" + round(resultValue * amount,2) + " " + to;
-                    resultTextView.setText(result);
-                    //Toast.makeText(getApplicationContext(), "All good", Toast.LENGTH_SHORT).show();
-                } catch (JSONException e) {
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                }
+                "&compact=ultra&apiKey=" + apiKey;                                                  //Using this url, the API will be requested to return the exchange ratio for the the 'from', 'to' currencies
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {      //A StringRequest is created containing the url. On the API's response
+            JSONObject jsonObject;
+            try {
+                jsonObject = new JSONObject(response);                                              //A JSONObject is created, containing the whole response
+                Double resultValue = Double.parseDouble(jsonObject.get(from + "_" + to).toString());//The ratio is extracted as an Object from the JSONObject, converted to String, and then parsed to Double, to be stored in the resultValue
+            progressBar.setVisibility(View.INVISIBLE);                                              //Now that we have received and stored the response from the API, the progressBar can be dismissed
+                //result = amount + " " + from + "\n = \n" + round(resultValue * amount,2) + " " + to;
+                amountResTextView.setText(String.valueOf(amount));
+                fromResTextView.setText(String.format(" %s", from));
+                equalsTextView.setVisibility(View.VISIBLE);
+                resultTextView.setText(String.valueOf(round(resultValue * amount, 2)));
+                toResTextView.setText(String.format(" %s", to));
+            } catch (JSONException e) {
+                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        }, error -> Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show());
         queue.add(stringRequest);
     }
 
@@ -148,11 +128,16 @@ public class Converter extends AppCompatActivity {
 
     public void openCalculator(View view){
         finishAffinity();
-        startActivity(new Intent(getApplicationContext(), CalculatorActivity.class));
+        startActivity(new Intent(getApplicationContext(), Calculator.class));
     }
 
     public void convertButtonClicked(View view){
+        amountResTextView.setText("");
+        fromResTextView.setText("");
+        toResTextView.setText("");
         resultTextView.setText("");
+        equalsTextView.setVisibility(View.INVISIBLE);
+
         progressBar.setVisibility(View.VISIBLE);
         //Toast.makeText(getApplicationContext(), "Clicked", Toast.LENGTH_SHORT).show();
         try{
@@ -161,7 +146,7 @@ public class Converter extends AppCompatActivity {
             //Toast.makeText(getApplicationContext(), "Double ok", Toast.LENGTH_SHORT).show();
             if(!convertFromValue.isEmpty() && !convertToValue.isEmpty()) {
                 //Toast.makeText(getApplicationContext(), convertFromValue + ", " + convertToValue, Toast.LENGTH_SHORT).show();
-                convert(convertFromValue, convertToValue, amount);
+                requestRatioFromAPI(convertFromValue, convertToValue, amount);
             }
             //Toast.makeText(getApplicationContext(), "Currency ok", Toast.LENGTH_SHORT).show();
         }catch (Exception e){
@@ -170,11 +155,11 @@ public class Converter extends AppCompatActivity {
     }
 
     public void swap(View view){
-        String temp = convertFromEditText.getText().toString();
-        convertFromEditText.setText(convertToEditText.getText().toString());
-        convertToEditText.setText(temp);
+        String temp = convertFromTextView.getText().toString();
+        convertFromTextView.setText(convertToTextView.getText().toString());
+        convertToTextView.setText(temp);
 
-        convertFromValue = convertFromEditText.getText().toString();
-        convertToValue = convertToEditText.getText().toString();
+        convertFromValue = convertFromTextView.getText().toString();
+        convertToValue = convertToTextView.getText().toString();
     }
 }

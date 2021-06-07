@@ -11,9 +11,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Calculator">
+        android:theme="@style/Theme.Calculator"
+        android:screenOrientation="sensorPortrait"
+        >
         <activity android:name=".Converter"></activity>
-        <activity android:name=".CalculatorActivity">
+        <activity android:name=".Calculator">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

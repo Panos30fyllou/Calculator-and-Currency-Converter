@@ -2,26 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/teal_200"
     android:orientation="vertical">
 
     <TextView
-        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Country"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:fontFamily="@font/comfortaa_light"
-        android:textStyle="bold"/>
+        android:text="Select Currency"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/searchEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search"
+        android:background="@color/white"
         android:fontFamily="@font/comfortaa_light"
-        android:textStyle="bold"/>
+        android:hint="Search"
+        android:textStyle="bold" />
+
     <ListView
         android:id="@+id/currencyListView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:background="@color/teal_200" />
 </LinearLayout>
